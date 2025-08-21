@@ -37,5 +37,6 @@ let greet = language == "French" ? "Bonjour" :
             language == "Spanish" ? "Hola" :
             language == "Eng" ? "Hello" :
             language == "Hindi" ? "Namaste":
+            language == "Japanese"?"Ohio":
             "Unknown language";
 console.log(greet);

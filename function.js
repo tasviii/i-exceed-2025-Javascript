@@ -39,5 +39,5 @@ function displayData(name,age,city,...args) // args is a rest parameter
  console.log(city);
  console.log(args.sort());
 }
-displayData("Naina",20,"Mumbai","Maharastra","India","Asia","London");
+displayData("Naina",20,"Mumbai","Maharastra","India","Asia","London","Los Angeles");
  
