@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>World Clock (Auto Timezones)</title>
+  <style>
+    body {
+      background: #0f0e0e;
+      color: #ffffff;
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      text-align: center;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    .clock-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 15px;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    .clock {
+      background-color: #1f1f1f;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    }
+
+    .timezone {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .time {
+      font-family: monospace;
+      font-size: 1.2em;
+      color: #00ffcc;
+    }
+  </style>
+</head>
+<body>
+  <h1>🌍 Auto World Clock</h1>
+  <div class="clock-container" id="clockContainer"></div>
+
+  <script>
+    // check if supported
+    if (typeof Intl.supportedValuesOf === 'function') {
+      const timezones = Intl.supportedValuesOf('timeZone'); // gets all IANA timezones
+      const container = document.getElementById('clockContainer');
+
+      // create a clock element for each timezone
+      for (let i = 0; i < timezones.length; i++) {
+        const div = document.createElement('div');
+        div.className = 'clock';
+        div.innerHTML = `
+          <div class="timezone">${timezones[i]}</div>
+          <div class="time" id="tz-${i}">--:--:--</div>
+        `;
+        container.appendChild(div);
+      }
+
+      // update time every second
+      function updateTimes() {
+        for (let i = 0; i < timezones.length; i++) {
+          const time = new Date().toLocaleTimeString('en-US', {
+            timeZone: timezones[i],
+            hour12: false
+          });
+          document.getElementById(`tz-${i}`).textContent = time;
+        }
+      }
+
+      updateTimes();
+      setInterval(updateTimes, 1000);
+    } else {
+      document.body.innerHTML = `
+        <h2 style="color: red;">Your browser does not support Intl.supportedValuesOf('timeZone').</h2>
+        <p>Try the latest version of Chrome, Firefox, or Edge.</p>
+      `;
+    }
+  </script>
+</body>
+</html>

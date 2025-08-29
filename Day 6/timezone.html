@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Big Time Zone Clock</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #111;
+      color: #fff;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    select {
+      padding: 0.5rem;
+      font-size: 1rem;
+      margin-bottom: 2rem;
+      border-radius: 5px;
+      border: none;
+    }
+
+    #clock {
+      font-size: 6rem;
+      font-weight: bold;
+      letter-spacing: 0.1em;
+      margin-top: 1rem;
+    }
+
+    #date {
+      font-size: 1.5rem;
+      margin-top: 0.5rem;
+      color: #ccc;
+    }
+  </style>
+</head>
+<body>
+  <h1>🌍 Select Time Zone</h1>
+  <select id="timezone-select"></select>
+
+  <div id="clock">--:--:--</div>
+  <div id="date">Loading date...</div>
+
+  <script>
+    const clock = document.getElementById("clock");
+    const dateDisplay = document.getElementById("date");
+    const timezoneSelect = document.getElementById("timezone-select");
+
+    // List of IANA time zones (from Intl.supportedValuesOf if available)
+    const timezones = Intl.supportedValuesOf
+      ? Intl.supportedValuesOf('timeZone')
+      : [
+          "Pacific/Midway", "America/Adak", "America/Anchorage", "America/Los_Angeles",
+          "America/Denver", "America/Chicago", "America/New_York", "America/Caracas",
+          "America/Sao_Paulo", "Atlantic/Azores", "Europe/London", "Europe/Berlin",
+          "Europe/Moscow", "Asia/Dubai", "Asia/Karachi", "Asia/Kolkata", "Asia/Bangkok",
+          "Asia/Hong_Kong", "Asia/Tokyo", "Australia/Sydney", "Pacific/Auckland"
+        ]; // fallback if supportedValuesOf is not available
+
+    // Populate dropdown
+    timezones.forEach(zone => {
+      const option = document.createElement("option");
+      option.value = zone;
+      option.textContent = zone;
+      timezoneSelect.appendChild(option);
+    });
+
+    // Set default to user's local time zone
+    timezoneSelect.value = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+    function updateClock() {
+      const selectedZone = timezoneSelect.value;
+      const now = new Date();
+
+      const timeOptions = {
+        timeZone: selectedZone,
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+      };
+
+      const dateOptions = {
+        timeZone: selectedZone,
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      };
+
+      const timeFormatter = new Intl.DateTimeFormat('en-US', timeOptions);
+      const dateFormatter = new Intl.DateTimeFormat('en-US', dateOptions);
+
+      clock.textContent = timeFormatter.format(now);
+      dateDisplay.textContent = dateFormatter.format(now);
+    }
+
+    timezoneSelect.addEventListener("change", updateClock);
+    setInterval(updateClock, 1000);
+    updateClock(); // Initial call
+  </script>
+</body>
+</html>
